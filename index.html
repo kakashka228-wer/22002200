@@ -815,9 +815,61 @@ ul{list-style:none}
     .cursor{display:none}
     body{cursor:auto}
 }
+
+/* ============================================================
+   Кнопки — простые
+   ============================================================ */
+.btn{border-radius:999px;transition:background .3s var(--ease),color .3s var(--ease),border-color .3s var(--ease),transform .2s var(--ease)}
+.btn-primary:hover{transform:none;box-shadow:none;background:var(--color-beige)}
+.btn-ghost:hover{transform:none;background:rgba(244,240,232,.08);border-color:var(--color-cream)}
+.btn-add:hover,.float-btn:hover{transform:none}
+.btn:active,.btn-add:active,.float-btn:active{transform:scale(.97)}
+.news-form .btn.btn-primary{border-radius:999px}
+
+/* декор кнопок: тонкая внутренняя рамка, на наведении «раскрывается» к краю */
+.btn,.btn-add,.float-btn{position:relative;isolation:isolate}
+.btn::before,.btn-add::before,.float-btn::before{
+    content:"";position:absolute;inset:3px;border-radius:inherit;pointer-events:none;
+    border:1px solid currentColor;opacity:.22;
+    transition:inset .35s var(--ease),opacity .35s var(--ease);
+}
+.btn:hover::before,.btn-add:hover::before,.float-btn:hover::before{inset:1px;opacity:.4}
+.btn-primary::before{opacity:.28}
+.btn .arr{display:inline-block}
+
+/* форма подписки под стекло */
+.news-form{border-radius:999px;padding:5px}
+.news-form input{padding:1rem 1.4rem 1rem 1.7rem}
+@media (max-width:768px){.news-form{border-radius:28px}}
+/* ---- Reference: animated chrome-thorn background decor ---- */
+.reference{overflow:hidden;isolation:isolate}
+.reference > .section-head,.reference > .ref-grid{position:relative;z-index:2}
+.ref-decor{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.ref-decor .thorn{position:absolute;will-change:transform;
+    transform:translate3d(0,var(--py,0px),0) rotate(var(--rot,0deg));
+    filter:drop-shadow(0 30px 40px rgba(17,17,15,.28))}
+.ref-decor .thorn svg{display:block;width:100%;height:auto;overflow:visible;
+    animation:thornFloat 14s ease-in-out infinite;transform-origin:50% 50%}
+.ref-decor .thorn--a{left:32vw;top:12%;width:clamp(200px,24vw,430px);--rot:-4deg;opacity:.92}
+.ref-decor .thorn--b{right:-5vw;top:-6%;width:clamp(150px,17vw,300px);--rot:152deg;opacity:.5}
+.ref-decor .thorn--b svg{animation-duration:19s;animation-direction:reverse}
+.ref-decor .thorn--c{left:-6vw;bottom:-8%;width:clamp(120px,13vw,230px);--rot:-28deg;opacity:.32}
+.ref-decor .thorn--c svg{animation-duration:23s}
+@keyframes thornFloat{
+    0%,100%{transform:translateY(0) rotate(0deg) scale(1)}
+    33%{transform:translateY(-16px) rotate(2.5deg) scale(1.015)}
+    66%{transform:translateY(10px) rotate(-2deg) scale(.99)}
+}
+@media (max-width:900px){
+    .ref-decor .thorn--a{left:auto;right:-14vw;top:3%;width:60vw;opacity:.28}
+    .ref-decor .thorn--b{display:none}
+    .ref-decor .thorn--c{opacity:.2}
+}
+@media (prefers-reduced-motion:reduce){.ref-decor .thorn svg{animation:none}}
 </style>
 </head>
 <body class="is-loading intro-active">
+
 
 <!-- ============ Intro — logo draw-in ============ -->
 <div id="intro" role="dialog" aria-modal="true" aria-label="Заставка WER WOLF">
@@ -1012,17 +1064,6 @@ ul{list-style:none}
         </div>
     </div>
 
-    <figure class="hero-figure hero-reveal">
-        <div class="frame">
-            <div class="figure-glow"></div>
-            <div class="weave"></div>
-            <figcaption class="frame-cap">
-                <span>The Armor Set — 001</span>
-                <span>Ivory / Oversized</span>
-            </figcaption>
-        </div>
-    </figure>
-
     <div class="hero-scroll" aria-hidden="true">
         <span>Scroll</span>
         <div class="scroll-line"></div>
@@ -1032,6 +1073,31 @@ ul{list-style:none}
 
 <!-- ============ Reference (light) ============ -->
 <section class="section reference" id="reference">
+    <div class="ref-decor" id="refDecor" aria-hidden="true">
+        <svg width="0" height="0" style="position:absolute" focusable="false">
+            <defs>
+                <linearGradient id="thornChrome" x1="-0.6" y1="0" x2="0.4" y2="1">
+                    <stop offset="0" stop-color="#050509"/><stop offset=".28" stop-color="#2b3140"/>
+                    <stop offset=".4" stop-color="#e3e9f5"/><stop offset=".48" stop-color="#0a0b10"/>
+                    <stop offset=".72" stop-color="#1c2130"/><stop offset=".86" stop-color="#a5aec2"/>
+                    <stop offset="1" stop-color="#05060a"/>
+                    <animate attributeName="x1" values="-0.6;0.5;-0.6" dur="9s" repeatCount="indefinite"/>
+                    <animate attributeName="x2" values="0.4;1.5;0.4" dur="9s" repeatCount="indefinite"/>
+                </linearGradient>
+                <symbol id="thornShape" viewBox="0 0 500 700">
+                    <path fill="url(#thornChrome)" fill-rule="evenodd" d="M462,32 C395,52 322,82 266,126 Q252,100 240,68 Q236,104 232,140 C212,152 198,166 188,182 Q176,120 150,58 Q148,110 150,162 C132,180 116,198 104,218 Q76,200 42,184 Q70,216 94,252 C88,278 86,306 90,340 Q62,372 28,412 Q64,398 98,396 C106,418 120,438 138,452 Q112,490 84,530 Q122,500 148,486 C162,496 178,504 194,510 Q182,542 170,578 Q196,554 218,542 C228,572 240,604 254,642 Q264,616 268,598 C290,620 314,636 340,656 Q320,620 302,588 C316,538 348,482 396,430 C330,452 262,450 212,420 C168,392 156,336 176,298 C198,256 258,232 308,206 C354,182 402,124 440,72 C450,58 458,44 462,32 Z
+M214,178 C226,166 252,176 250,198 C248,218 230,224 218,214 C206,204 206,188 214,178 Z
+M150,236 C160,226 174,236 172,254 C170,270 154,272 148,260 C144,252 144,244 150,236 Z
+M108,354 C116,344 128,352 126,372 C124,388 110,390 106,378 C102,370 102,362 108,354 Z"/>
+                    <path d="M452,40 C380,66 292,104 236,162 C196,206 168,250 172,310" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M100,300 C92,340 96,380 112,420" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2" stroke-linecap="round"/>
+                </symbol>
+            </defs>
+        </svg>
+        <div class="thorn thorn--a"><svg viewBox="0 0 500 700"><use href="#thornShape"/></svg></div>
+        <div class="thorn thorn--b"><svg viewBox="0 0 500 700"><use href="#thornShape"/></svg></div>
+        <div class="thorn thorn--c"><svg viewBox="0 0 500 700"><use href="#thornShape"/></svg></div>
+    </div>
     <div class="section-head reveal">
         <h2 class="display section-title">WER WOLF — форма и характер</h2>
         <span class="section-num">Референс · 01</span>
@@ -1298,18 +1364,7 @@ ul{list-style:none}
 </section>
 
 <!-- ============ Newsletter ============ -->
-<section class="section newsletter">
-    <div class="reveal">
-        <span class="overline">Ранее доступа</span>
-        <h2 class="display section-title" style="margin-top:1rem">Получите доступ к коллекции первыми</h2>
-        <p>Подпишитесь, чтобы узнать о выходе капсулы 2025/2026 и закрытых показах.</p>
-        <form class="news-form" id="newsForm" novalidate>
-            <label for="newsEmail" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email</label>
-            <input type="email" id="newsEmail" name="email" placeholder="Ваш email" autocomplete="email" required>
-            <button type="submit" class="btn btn-primary">Подписаться</button>
-        </form>
-    </div>
-</section>
+<section class="section newsletter"></section>
 
 <!-- ============ Footer ============ -->
 <footer class="footer">
@@ -1607,7 +1662,7 @@ ul{list-style:none}
 
     /* ---------- 10. Newsletter ---------- */
     const newsForm = document.getElementById('newsForm');
-    newsForm.addEventListener('submit', (e) => {
+    if (newsForm) newsForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('newsEmail').value.trim();
         const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -1701,6 +1756,23 @@ ul{list-style:none}
         };
     }
 
+})();
+</script>
+<script>
+/* Parallax for the Reference-section decor */
+(function(){
+    var wrap=document.getElementById('refDecor');
+    if(!wrap||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    var sec=wrap.parentElement,items=[].slice.call(wrap.querySelectorAll('.thorn')),
+        speeds=[0.14,-0.1,0.08],visible=false,ticking=false;
+    function update(){
+        ticking=false;
+        var r=sec.getBoundingClientRect(),c=r.top+r.height/2-innerHeight/2;
+        items.forEach(function(el,i){el.style.setProperty('--py',(c*speeds[i]).toFixed(1)+'px')});
+    }
+    function onScroll(){if(visible&&!ticking){ticking=true;requestAnimationFrame(update)}}
+    new IntersectionObserver(function(e){visible=e[0].isIntersecting;if(visible)update()},{rootMargin:'20% 0px'}).observe(sec);
+    addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);
 })();
 </script>
 </body>
